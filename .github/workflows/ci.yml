@@ -1,0 +1,100 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust: [stable]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Cache target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.os }}-cargo--${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+          toolchain: ${{ matrix.rust }}
+
+      - name: Clippy
+        run: cargo clippy --all-features -- -W clippy::all -D warnings
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Doc Generation
+        run: cargo doc --bins --examples --all-features --no-deps
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust: [stable]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Cache target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.os }}-cargo--${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+          toolchain: ${{ matrix.rust }}
+
+      - name: Build debug binary
+        run: cargo build
+
+      - name: Build release binary
+        run: cargo build --release
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust: [stable]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Cache target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.os }}-cargo--${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+          toolchain: ${{ matrix.rust }}
+
+      - name: Test
+        run: cargo test --all-features
