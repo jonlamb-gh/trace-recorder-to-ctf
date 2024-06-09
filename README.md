@@ -6,6 +6,11 @@ Convert FreeRTOS [trace recorder](https://github.com/percepio/TraceRecorderSourc
 
 ## Getting Started
 
+1. Collect streaming protocol trace recorder data from your device (i.e. using the RTT or TCP stream port)
+1. Install `trace-recorder-to-ctf` from github Releases or build from source (`cargo install --path .`)
+1. Convert to CTF
+1. View the trace data in [Trace Compass](https://eclipse.dev/tracecompass/) or with [babeltrace2](https://babeltrace.org/)
+
 ```bash
 trace-recorder-to-ctf trc.psf
 
@@ -15,8 +20,6 @@ ctf_trace/
 ├── metadata
 └── stream
 ```
-
-Use [babeltrace2](https://babeltrace.org/) or [trace-compass](https://eclipse.dev/tracecompass/).
 
 ```
 # Inspect the metadata
