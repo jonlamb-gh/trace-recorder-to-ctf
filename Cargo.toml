@@ -1,0 +1,21 @@
+[package]
+name = "trace-recorder-to-ctf"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Convert FreeRTOS trace-recorder traces to LTTng-shaped CTF"
+categories = ["command-line-utilities", "embedded", "parsing"]
+keywords = ["ctf", "freertos"]
+authors = ["Jon Lamb"]
+repository = "https://github.com/jonlamb-gh/trace-recorder-to-ctf"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive", "env", "color"] }
+ctrlc = { version = "3.4", features=["termination"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "1.0"
+enum-iterator = "2.1"
+chrono = "0.4"
+babeltrace2-sys = { git = "https://github.com/auxoncorp/babeltrace2-sys.git", branch = "src-component-support" }
+trace-recorder-parser = "0.14"
