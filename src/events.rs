@@ -227,3 +227,9 @@ impl<'a> TryFrom<(EventType, &Context, &'a mut StringCache)> for IrqHandlerExit<
         })
     }
 }
+
+#[derive(CtfEventClass)]
+#[event_name_from_event_type]
+pub struct Unsupported {
+    // No payload fields
+}

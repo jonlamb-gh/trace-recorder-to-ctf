@@ -279,19 +279,13 @@ impl TrcCtfConverter {
                     warn!(%event_type, event = %ev, "Got ISR resume but no pending IRS");
                 }
 
-                self.string_cache.insert_type(event_type)?;
-                let type_str_ptr = self.string_cache.get_type(&event_type).as_ptr();
-
-                let event_class =
-                    self.event_class(stream_class, event_type, |stream_class| unsafe {
-                        let event_class = ffi::bt_event_class_create(stream_class);
-                        let ret = ffi::bt_event_class_set_name(event_class, type_str_ptr);
-                        ret.capi_result()?;
-                        Ok(event_class)
-                    })?;
+                let event_class = self.event_class(stream_class, event_type, |stream_class| {
+                    Unsupported::event_class(event_type, stream_class)
+                })?;
                 let msg = ctf_state.create_message(event_class, tracked_timestamp);
                 let ctf_event = unsafe { ffi::bt_message_event_borrow_event(msg) };
                 self.add_event_common_ctx(event_id, tracked_event_count, raw_timestamp, ctf_event)?;
+                Unsupported {}.emit_event(ctf_event)?;
                 ctf_state.push_message(msg)?;
             }
         }
