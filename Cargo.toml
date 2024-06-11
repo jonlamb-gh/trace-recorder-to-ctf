@@ -10,6 +10,7 @@ authors = ["Jon Lamb"]
 repository = "https://github.com/jonlamb-gh/trace-recorder-to-ctf"
 
 [dependencies]
+ctf-macros = { path = "macros" }
 clap = { version = "4.5", features = ["derive", "env", "color"] }
 ctrlc = { version = "3.4", features=["termination"] }
 tracing = "0.1"

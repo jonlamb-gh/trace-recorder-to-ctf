@@ -22,6 +22,7 @@ use trace_recorder_parser::{
 use tracing::{debug, error, info, warn};
 
 mod convert;
+mod events;
 mod interruptor;
 mod types;
 
@@ -406,7 +407,7 @@ impl TrcPluginState {
     fn process_event(
         &mut self,
         event_code: EventCode,
-        event: &Event,
+        event: Event,
         ctf_state: &mut BorrowedCtfState,
     ) -> Result<(), Error> {
         let event_type = event_code.event_type();
@@ -535,7 +536,7 @@ impl SourcePluginHandler for TrcPluginState {
                 }
 
                 // TODO need to put_ref(msg) on this and/or all of the msgs?
-                self.process_event(event_code, &event, &mut ctf_state)?;
+                self.process_event(event_code, event, &mut ctf_state)?;
 
                 Ok(ctf_state.release())
             }

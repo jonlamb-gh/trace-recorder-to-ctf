@@ -1,5 +1,72 @@
 use babeltrace2_sys::{ffi, Error, MessageIteratorStatus, SelfMessageIterator};
-use trace_recorder_parser::time::Timestamp;
+use std::collections::{hash_map, HashMap};
+use std::ffi::{CStr, CString};
+use trace_recorder_parser::{
+    streaming::event::{EventType, IsrEvent, TaskEvent},
+    time::Timestamp,
+    types::{ObjectHandle, ObjectName, Priority},
+};
+
+#[derive(Debug)]
+pub struct Context {
+    pub handle: ObjectHandle,
+    pub name: ObjectName,
+    pub priority: Priority,
+}
+
+impl From<TaskEvent> for Context {
+    fn from(value: TaskEvent) -> Self {
+        Self {
+            handle: value.handle,
+            name: value.name,
+            priority: value.priority,
+        }
+    }
+}
+
+impl From<IsrEvent> for Context {
+    fn from(value: IsrEvent) -> Self {
+        Self {
+            handle: value.handle,
+            name: value.name,
+            priority: value.priority,
+        }
+    }
+}
+
+#[derive(Default)]
+pub struct StringCache {
+    strings: HashMap<String, CString>,
+    event_types: HashMap<EventType, CString>,
+}
+
+impl StringCache {
+    pub fn insert_str(&mut self, key: &str) -> Result<(), Error> {
+        if !self.strings.contains_key(key) {
+            self.strings.insert(key.to_string(), CString::new(key)?);
+        }
+        Ok(())
+    }
+
+    pub fn get_str(&self, key: &str) -> &CStr {
+        self.strings
+            .get(key)
+            .expect("String cache string entry doesn't exist")
+    }
+
+    pub fn insert_type(&mut self, key: EventType) -> Result<(), Error> {
+        if let hash_map::Entry::Vacant(e) = self.event_types.entry(key) {
+            e.insert(CString::new(key.to_string())?);
+        }
+        Ok(())
+    }
+
+    pub fn get_type(&self, key: &EventType) -> &CStr {
+        self.event_types
+            .get(key)
+            .expect("String cache event type entry doesn't exist")
+    }
+}
 
 // TODO split up the roles of this, currently just a catch all
 pub struct BorrowedCtfState<'a> {
