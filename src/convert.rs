@@ -261,13 +261,17 @@ impl TrcCtfConverter {
 
             // Return to the interrupted ISR (nested ISR)
             Event::IsrResume(ev) if !self.pending_isrs.is_empty() => {
-                let isr = self.pending_isrs.pop().unwrap();
-                assert_eq!(ev.handle, isr.handle);
+                // This event indicates the previous ISR context before the active context
+                // top of the stack contains the active context
+                let ctx = self.pending_isrs.pop().unwrap();
+                let previous_isr = self.pending_isrs.last();
+                let previous_ctx = Context::from(ev);
+                assert_eq!(Some(&previous_ctx), previous_isr);
+
                 let event_class = self.irq_handler_exit_event_class;
                 let msg = ctf_state.create_message(event_class, tracked_timestamp);
                 let ctf_event = unsafe { ffi::bt_message_event_borrow_event(msg) };
                 self.add_event_common_ctx(event_id, tracked_event_count, raw_timestamp, ctf_event)?;
-                let ctx = Context::from(ev);
                 IrqHandlerExit::try_from((event_type, &ctx, &mut self.string_cache))?
                     .emit_event(ctf_event)?;
                 ctf_state.push_message(msg)?;

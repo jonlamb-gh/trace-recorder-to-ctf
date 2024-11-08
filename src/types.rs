@@ -7,7 +7,7 @@ use trace_recorder_parser::{
     types::{ObjectHandle, ObjectName, Priority},
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Context {
     pub handle: ObjectHandle,
     pub name: ObjectName,
