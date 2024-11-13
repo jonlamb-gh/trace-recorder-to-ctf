@@ -51,6 +51,25 @@ babeltrace2 --clock-seconds ./ctf_trace
 [0.000535150] (+0.000139862) trace-recorder sched_wakeup: { cpu_id = 0 }, { id = 0x30, event_count = 25, timer = 96327 }, { src_event_type = "TASK_READY", comm = "CLI", tid = 536904392, prio = 1, target_cpu = 0 }
 ```
 
+## Docker
+
+You can also use the Docker image `ghcr.io/jonlamb-gh/trace-recorder-to-ctf:latest`:
+
+```bash
+mkdir -p /tmp/output
+
+# Volumes:
+# * input file test_system.psf at /test_system.psf
+# * output directory /tmp/output at /output
+docker run -u $(id -u):$(id -g) -it -v /tmp/test_system.psf:/test_system.psf:ro -v /tmp/output:/output:rw ghcr.io/jonlamb-gh/trace-recorder-to-ctf:latest -o /output/test_system /test_system.psf
+
+tree /tmp/output/
+/tmp/output/
+└── test_system
+    ├── metadata
+    └── stream
+```
+
 ## Concept Mapping
 
 The converter produces CTF data that integrates with several of the out-of-box trace-compass LTTng kernel analyses.
