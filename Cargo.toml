@@ -1,6 +1,6 @@
 [package]
 name = "trace-recorder-to-ctf"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 description = "Convert FreeRTOS trace-recorder traces to LTTng-shaped CTF"
@@ -19,4 +19,4 @@ thiserror = "1.0"
 enum-iterator = "2.1"
 chrono = "0.4"
 babeltrace2-sys = { git = "https://github.com/auxoncorp/babeltrace2-sys.git", branch = "src-component-support" }
-trace-recorder-parser = "0.14"
+trace-recorder-parser = "0.19"
