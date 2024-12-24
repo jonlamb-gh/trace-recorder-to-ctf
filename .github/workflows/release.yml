@@ -26,6 +26,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --assume-yes patchelf gzip cmake make gcc g++ build-essential
+          sudo apt-get install --no-install-recommends --assume-yes libssl-dev libglib2.0-dev pkg-config libtool flex bison autoconf automake
+
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
