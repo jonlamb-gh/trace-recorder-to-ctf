@@ -1,3 +1,5 @@
+#![allow(clippy::manual_c_str_literals)]
+
 use crate::{convert::TrcCtfConverter, types::BorrowedCtfState};
 use babeltrace2_sys::{
     ffi, source_plugin_descriptors, BtResult, BtResultExt, CtfPluginSinkFsInitParams,
