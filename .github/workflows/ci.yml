@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         rust: [stable]
-        os: [ubuntu-latest]
+        os: [ubuntu-20.04]
 
     steps:
       - name: Checkout sources
@@ -49,7 +49,7 @@ jobs:
     strategy:
       matrix:
         rust: [stable]
-        os: [ubuntu-latest]
+        os: [ubuntu-20.04]
 
     steps:
       - name: Checkout sources
@@ -87,7 +87,7 @@ jobs:
     strategy:
       matrix:
         rust: [stable]
-        os: [ubuntu-latest]
+        os: [ubuntu-20.04]
 
     steps:
       - name: Checkout sources
